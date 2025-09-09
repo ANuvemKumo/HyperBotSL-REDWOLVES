@@ -17,7 +17,7 @@ Entrar para o pódio no Nível 2 da OBR 2026.
 - **Sensores de cor TCS34725**
 - **Sensor ultrassônico**
 - **Multiplexador TCA9548A (para usar múltiplos sensores I2C)**
-- **Sensor de Eixo**
+- **Acelerômetro**
 - **Estrutura em Lego**
 - **Bateria Li-Ion ou Pack de pilhas**
 
