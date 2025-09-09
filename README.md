@@ -27,13 +27,13 @@ Entrar para o pódio no Nível 2 da OBR 2026.
 
 ### 🧠 Estrutura e Montagem
 
-**Nova Carcaça:**
+**Versão 1 da Nova Carcaça:**
 
 ![Robô](images/hyper_bot_carcaça.jpg)
 
 ---
 
-**Robô com fios conectados:**
+**Robô V1 com fios conectados:**
 
 ![Robô](images/hyper_bot_com_fios.jpg)
 
