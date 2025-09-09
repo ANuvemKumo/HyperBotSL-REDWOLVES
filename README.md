@@ -31,6 +31,8 @@ Entrar para o pódio no Nível 2 da OBR 2026.
 
 ![Robô](images/hyper_bot_carcaça.jpg)
 
+---
+
 **Robô com fios conectados:**
 
 ![Robô](images/hyper_bot_com_fios.jpg)
@@ -43,6 +45,12 @@ Entrar para o pódio no Nível 2 da OBR 2026.
 - Detecta cor verde nos sensores RGB para acionar giros fechados.
 - Lógica **não bloqueante** com `millis()` para permitir leitura contínua de sensores e movimento fluido.
 - Log detalhado no **Serial Monitor** para visualização de sensores e resposta do PID.
+
+---
+
+## 🤖⚙️ Esquema de montagem para os fios
+
+![Montagem de fios](images/fritzing.png)
 
 ---
 
