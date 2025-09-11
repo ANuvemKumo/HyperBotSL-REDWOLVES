@@ -70,8 +70,8 @@ Entrar para o pódio no Nível 2 da OBR 2026.
 | Luiz Loureiro      | Supervisor, Pesquisador, Programador e  Montagem   |
 | Estevão F. Cruz     | Auxiliar, Pesquisador, Programador, Montagem e Testes              |
 | Guilherme Malta    | Pesquisador, Montagem, Testes e Programador        |
-| João Pedro         | Pesquisador e Programador        |
-| Vitor              | Pesquisador e Montagem        |
+| João Vitor         | Pesquisador e Programador        |
+| Pietro              | Pesquisador e Montagem        |
 | Emanuel            | Pesquisador e Programador       |
 
 ---
