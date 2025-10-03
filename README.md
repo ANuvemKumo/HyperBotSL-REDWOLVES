@@ -17,7 +17,7 @@ Entrar para o pódio no Nível 2 da OBR 2026.
 - **Sensores de cor TCS34725**
 - **Sensor ultrassônico**
 - **Multiplexador TCA9548A (para usar múltiplos sensores I2C)**
-- **Sensor de Eixo**
+- **Acelerômetro**
 - **Estrutura em Lego**
 - **Bateria Li-Ion ou Pack de pilhas**
 
@@ -27,11 +27,13 @@ Entrar para o pódio no Nível 2 da OBR 2026.
 
 ### 🧠 Estrutura e Montagem
 
-**Nova Carcaça:**
+**Versão 1 da Nova Carcaça:**
 
 ![Robô](images/hyper_bot_carcaça.jpg)
 
-**Robô com fios conectados:**
+---
+
+**Robô V1 com fios conectados:**
 
 ![Robô](images/hyper_bot_com_fios.jpg)
 
@@ -43,6 +45,12 @@ Entrar para o pódio no Nível 2 da OBR 2026.
 - Detecta cor verde nos sensores RGB para acionar giros fechados.
 - Lógica **não bloqueante** com `millis()` para permitir leitura contínua de sensores e movimento fluido.
 - Log detalhado no **Serial Monitor** para visualização de sensores e resposta do PID.
+
+---
+
+## 🤖⚙️ Esquema de montagem para os fios
+
+![Montagem de fios](images/fritzing.png)
 
 ---
 
@@ -62,8 +70,8 @@ Entrar para o pódio no Nível 2 da OBR 2026.
 | Luiz Loureiro      | Supervisor, Pesquisador, Programador e  Montagem   |
 | Estevão F. Cruz     | Auxiliar, Pesquisador, Programador, Montagem e Testes              |
 | Guilherme Malta    | Pesquisador, Montagem, Testes e Programador        |
-| João Pedro         | Pesquisador e Programador        |
-| Vitor              | Pesquisador e Montagem        |
+| João Vitor         | Pesquisador e Programador        |
+| Pietro              | Pesquisador e Montagem        |
 | Emanuel            | Pesquisador e Programador       |
 
 ---
