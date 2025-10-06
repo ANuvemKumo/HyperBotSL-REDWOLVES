@@ -21,9 +21,9 @@ int ledPin = 5; // Pino PWM ligando o led central (pode ser qualquer pino PWM do
 int brilho = 0; // Nível de brilho do LED (valor entre 0 e 255)
 
 // Parâmetros PID
-float Kp = 40; // Pode variar entre 80 e 160
+float Kp = 30; // Pode variar
 float Ki = 0;
-float Kd = 10;
+float Kd = 2;
 
 float setPoint = 0; // Se refere ao valor que o PID se baseará para corrigir o erro
 float erro = 0; // É a variação de um sensor para o outro. Em teoria será 1, 0 e -1 no digital e de 0 a 100 no analogico
@@ -345,11 +345,6 @@ void Desvio(){
   digitalWrite(DIRECAO_ESQUERDA, LOW);
   digitalWrite(DIRECAO_DIREITA, LOW);
   delay(1000);
-  /*analogWrite(MOTOR_ESQUERDO, 80);
-  analogWrite(MOTOR_DIREITO, 80);
-  digitalWrite(DIRECAO_ESQUERDA, HIGH);
-  digitalWrite(DIRECAO_DIREITA, LOW);
-  delay(1000);*/
 
   //Andar para frente
   analogWrite(MOTOR_ESQUERDO, 150);
@@ -371,11 +366,6 @@ void Desvio(){
   digitalWrite(DIRECAO_ESQUERDA, LOW);
   digitalWrite(DIRECAO_DIREITA, LOW);
   delay(1000);
-  /*analogWrite(MOTOR_ESQUERDO,50);
-  analogWrite(MOTOR_DIREITO,100);
-  digitalWrite(DIRECAO_ESQUERDA, LOW);
-  digitalWrite(DIRECAO_DIREITA, HIGH);
-  delay(1000);*/
 
   //Andar para frente
   analogWrite(MOTOR_ESQUERDO, 150);
@@ -397,11 +387,6 @@ void Desvio(){
   digitalWrite(DIRECAO_ESQUERDA, LOW);
   digitalWrite(DIRECAO_DIREITA, LOW);
   delay(1000);
-  /*analogWrite(MOTOR_ESQUERDO, 100);
-  analogWrite(MOTOR_DIREITO, 100);
-  digitalWrite(DIRECAO_ESQUERDA, LOW);
-  digitalWrite(DIRECAO_DIREITA, HIGH);
-  delay(1000);*/
   
   //Enquanto o sensor interno direito não ver preto faz
   unsigned long tempoInicio = millis();
@@ -432,11 +417,6 @@ void Desvio(){
   
   //Virar para direita
   giroCurvaFechadaDireita();
-  /*analogWrite(MOTOR_ESQUERDO, 80);
-  analogWrite(MOTOR_DIREITO, 80);
-  digitalWrite(DIRECAO_ESQUERDA, HIGH);
-  digitalWrite(DIRECAO_DIREITA, LOW);
-  delay(1000);*/
 }
 
 // Função para normalizar os valores RGB
@@ -543,19 +523,6 @@ void loop() {
   float S3 = analogRead(SENSOR_DIREITO) / 1023.0;
   float S4 = analogRead(SENSOR_EXTREMO_DIREITO) / 1023.0;
   int distance = sensor.getCM();
-
-  /*Serial.print("SENSOR 1 ");
-  Serial.println(S1);
-  Serial.print(" ");
-  Serial.print("SENSOR 2 ");
-  Serial.print(S2);
-  Serial.print(" ");
-  Serial.print("SENSOR 3 ");
-  Serial.println(S3);
-  Serial.print(" ");
-  Serial.print("SENSOR 4 ");
-  Serial.print(S4);
-  Serial.print(" ");*/
 
   atualizaLedDesligadoEsquerdo();
   //atualizaLedDesligadoDireito();
@@ -1018,17 +985,6 @@ void loop() {
     // Corrige as leituras e normaliza
     //corrigeLeituras();
 
-    // Exibe os valores corrigidos para diagnóstico
-    /*Serial.print(" | RGB E: ");
-    Serial.print(rE); Serial.print(", ");
-    Serial.print(gE); Serial.print(", ");
-    Serial.print(bE);
-
-    Serial.print(" | RGB D: ");
-    Serial.print(rD); Serial.print(", ");
-    Serial.print(gD); Serial.print(", ");
-    Serial.print(bD);*/
-
     // Novos limiares refinados
     int brancoMin = 235;
     int brancoMax = 255;
@@ -1069,126 +1025,39 @@ void loop() {
     bool vermelhoEsquerdo = (rE > gE + 15) && (rE > bE + 15) && (rE > limiarVermelho);
     bool vermelhoDireito  = (rD > gD + 15) && (rD > bD + 15) && (rD > limiarVermelho);
 
-    // === EXIBIÇÃO ESQUERDA ===
-    /*Serial.print(" | Cor E: ");
-    /*
-    if (brancoEsquerdo) {
-      Serial.print("BRANCO ");
-    } else if (begeEsquerdo) {
-      Serial.print("BEGE ");
-    } else
-    */
-    /*if (verdeEsquerdo) {
-      Serial.print("VERDE ");
-    } else if (vermelhoEsquerdo) {
-      Serial.print("VERMELHO ");
-    }
-    /*
-    else if (amareloEsquerdo) {
-      Serial.print("AMARELO ");
-    }
-    */
-    /*else {
-      Serial.print("OUTRA ");
-    }
-
-    Serial.print("(R: "); Serial.print(rE);
-    Serial.print(", G: "); Serial.print(gE);
-    Serial.print(", B: "); Serial.print(bE);
-    Serial.print(")");
-
-    Serial.print(" | Calibração: ");
-    if (verdeEsquerdo) {
-      Serial.print("Verde detectado (G > R + 15, G > B + 15)");
-    } else if (vermelhoEsquerdo) {
-      Serial.print("Vermelho detectado (R > G + 15, R > B + 15)");
-    }
-    /*
-    else if (amareloEsquerdo) {
-      Serial.print("Amarelo detectado (R + G > B + 50)");
-    } else if (begeEsquerdo) {
-      Serial.print("Bege detectado (RGB entre 180 e 230)");
-    } else if (brancoEsquerdo) {
-      Serial.print("Branco detectado (RGB entre 235 e 255)");
-    }
-    */
-    /*else {
-      Serial.print("Cor não reconhecida.");
-    }
-
-    // === EXIBIÇÃO DIREITA ===
-    Serial.print(" | Cor D: ");
-    /*
-    if (brancoDireito) {
-      Serial.print("BRANCO ");
-    } else if (begeDireito) {
-      Serial.print("BEGE ");
-    } else
-    */
-    /*if (verdeDireito) {
-      Serial.print("VERDE ");
-    } else if (vermelhoDireito) {
-      Serial.print("VERMELHO ");
-    }
-    /*
-    else if (amareloDireito) {
-      Serial.print("AMARELO ");
-    }
-    */
-    /*else {
-      Serial.print("OUTRA ");
-    }
-
-    Serial.print("(R: "); Serial.print(rD);
-    Serial.print(", G: "); Serial.print(gD);
-    Serial.print(", B: "); Serial.print(bD);
-    Serial.print(")");
-
-    Serial.print(" | Calibração: ");
-    if (verdeDireito) {
-      Serial.print("Verde detectado (G > R + 15, G > B + 15)");
-    } else if (vermelhoDireito) {
-      Serial.print("Vermelho detectado (R > G + 15, R > B + 15)");
-    }
-    /*
-    else if (amareloDireito) {
-      Serial.print("Amarelo detectado (R + G > B + 50)");
-    } else if (begeDireito) {
-      Serial.print("Bege detectado (RGB entre 180 e 230)");
-    } else if (brancoDireito) {
-      Serial.print("Branco detectado (RGB entre 235 e 255)");
-    }
-    */
-    /*else {
-      Serial.print("Cor não reconhecida.");
-    }
-
-    // Lógica de AÇÃO no log (não afeta movimento)
-    /*Serial.print(" | Ação: ");
-    if (verdeEsquerdo && verdeDireito) {
-      Serial.print("giro de 180 graus - ambos verdes detectados.");
-    } else if (verdeEsquerdo && !verdeDireito) {
-      Serial.print("giro de 90 graus à esquerda - verde esquerdo detectado.");
-    } else if (!verdeEsquerdo && verdeDireito) {
-      Serial.print("giro de 90 graus à direita - verde direito detectado.");
-    } else if (vermelhoEsquerdo || vermelhoDireito) {
-      Serial.print("PARAR - vermelho detectado.");
-    } else {
-      Serial.print("seguindo linha / PID ativo - nenhum giro necessário.");
-    }
-
-    */
-
-    //Serial.println();
-    
+ 
     // Reseta flags para próxima leitura
     leituraProntaEsquerdo = false;
     leituraProntaDireito = false;
   }
 
-    // Write values to serial port
+  /*Serial.print("SENSOR 1 ");
+  Serial.println(S1);
+  Serial.print(" ");
+  Serial.print("SENSOR 2 ");
+  Serial.print(S2);
+  Serial.print(" ");
+  Serial.print("SENSOR 3 ");
+  Serial.println(S3);
+  Serial.print(" ");
+  Serial.print("SENSOR 4 ");
+  Serial.print(S4);
+  Serial.print(" ");*/
+
+  // Write values to serial port
   /*Serial.print("Distance: ");
   Serial.print(distance);
   Serial.println("cm");*/
+
+  // Exibe os valores corrigidos para diagnóstico
+  /*Serial.print(" | RGB E: ");
+  Serial.print(rE); Serial.print(", ");
+  Serial.print(gE); Serial.print(", ");
+  Serial.print(bE);
+
+  Serial.print(" | RGB D: ");
+  Serial.print(rD); Serial.print(", ");
+  Serial.print(gD); Serial.print(", ");
+  Serial.print(bD);*/
 
 }
