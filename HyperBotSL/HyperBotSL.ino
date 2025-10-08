@@ -21,7 +21,7 @@ int ledPin = 5; // Pino PWM ligando o led central (pode ser qualquer pino PWM do
 int brilho = 0; // Nível de brilho do LED (valor entre 0 e 255)
 
 // Parâmetros PID
-float Kp = 30; // Pode variar
+float Kp = 40; // Pode variar
 float Ki = 0;
 float Kd = 2;
 
