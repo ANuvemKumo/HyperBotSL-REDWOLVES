@@ -23,21 +23,89 @@ Entrar para o pódio no Nível 2 da OBR 2026.
 
 ---
 
-## 📷 Imagens do Projeto
+## **📷 Imagens do Projeto**
 
-### 🧠 Estrutura e Montagem
+### **🧠 Estrutura e Montagem**
 
-**Versão 1 da Nova Carcaça:**
+#### Versão 1 da Nova Carcaça:
 
 ![Robô](images/hyper_bot_carcaça.jpg)
 
 ---
-
-**Robô V1 com fios conectados:**
+#### Robô V1 com fios conectados:
 
 ![Robô](images/hyper_bot_com_fios.jpg)
 
 ---
+### **🧠 Modelos 3D de Peças Personalizadas para montagem**
+
+#### Suporte_Arduino+lego(isométrico)
+
+
+![Robô](images/Suporte_Arduino+lego(isométrico).png)
+
+---
+
+#### Suporte_Arduino+lego
+
+
+![Robô](images/Suporte_Arduino+lego.png)
+
+---
+
+#### Suporte_Interruptor+lego(isométrico)
+
+
+![Robô](images/Suporte_Interruptor+lego(isométrico).png)
+
+---
+
+#### Suporte_Interruptor+lego
+
+
+![Robô](images/Suporte_Interruptor+lego.png)
+
+---
+
+#### Suporte_multiplexador+lego(isométrico)
+
+
+![Robô](images/Suporte_multiplexador+lego(isométrico).png)
+
+---
+
+#### Suporte_multiplexador+lego
+
+
+![Robô](images/Suporte_multiplexador+lego.png)
+
+---
+
+#### Suporte_Ponte-H+lego(isométrico)
+
+
+![Robô](images/Suporte_Ponte-H+lego(isométrico).png)
+
+---
+
+#### Suporte_Ponte-H+lego
+
+![Robô](images/Suporte_Ponte-H+lego.png)
+
+---
+
+#### Suporte_Ultrassônico+lego(isométrico)
+
+![Robô](images/Suporte_Ultrassônico+lego(isométrico).png)
+
+---
+
+#### Suporte_Ultrassônico+lego
+
+![Robô](images/Suporte_Ultrassônico+lego.png)
+
+---
+
 
 ## 👨‍💻 Funcionamento do Código
 
