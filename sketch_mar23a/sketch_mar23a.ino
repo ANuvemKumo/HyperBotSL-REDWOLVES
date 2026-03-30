@@ -1,150 +1,101 @@
-/*******************************************************************************
-* Vespa - Primeiros Passos para Controle de Motores DC (v1.0)
-* 
-* Codigo de demonstracao das funcoes de controle para o acionamento conjunto e
-* individual de motores DC pela Vespa.
-* 
-* Copyright 2022 RoboCore.
-* Escrito por Giovanni de Castro (10/06/2022).
-* 
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version (<https://www.gnu.org/licenses/>).
-*******************************************************************************/
-
-//Inclusao da biblioteca da Vespa
 #include <RoboCore_Vespa.h>
 
-//Criacao do objeto "motores" para o acionamento dos motores
+// ==================== MOTORES ====================
 VespaMotors motores;
 
-//Declaracao das variaveis de velocidade maxima e de curva
-const int VELOCIDADE_MAXIMA = 100;
-const int VELOCIDADE_CURVA = 50;
+// Velocidade base do robô
+const int VELOCIDADE_BASE = 50;
+const int VELOCIDADE_MAX = 70;
+const int LIMITE_CONTROLE = 50;
 
-//Declaracao das variaveis de pausa para alteracao de estado dos motores e aceleracao
-const int TEMPO_PAUSA = 1000;
-const int TEMPO_ACELERACAO = 10;
+// ==================== SENSORES ====================
+// Mesmos pinos que você forneceu
+#define EXT_DIR 32  // S4
+#define DIR     33  // S3
+#define ESQ     25  // S2
+#define EXT_ESQ 26  // S1
 
-//------------------------------------------------------------------------------
+// ==================== PID ====================
+// Constantes PID (PRECISAM SER AJUSTADAS!)
+float Kp = 25.0;
+float Ki = 0.0;
+float Kd = 15.0;
 
+// Variáveis PID
+float erro = 0;
+float erroAnterior = 0;
+float integral = 0;
+float derivada = 0;
+float controle = 0;
+
+// ==================== SETUP ====================
 void setup() {
-
-  //Inicializacao do monitor serial
   Serial.begin(115200);
-  Serial.println("<--- Primeiros Passos com o Controle de Motores DC da Vespa --->");
 
+  pinMode(EXT_ESQ, INPUT);
+  pinMode(ESQ, INPUT);
+  pinMode(DIR, INPUT);
+  pinMode(EXT_DIR, INPUT);
+
+  Serial.println("Seguidor de linha com PID iniciado!");
 }
 
-//------------------------------------------------------------------------------
-
+// ==================== LOOP ====================
 void loop() {
 
-  //Funcoes de controle conjunto dos motores
-  Serial.println("<--- CONTROLE CONJUNTO DOS MOTORES --->");
-  Serial.println("Acionando motores para frente...");
-  //Acionamento dos motores para frente
-  motores.forward(VELOCIDADE_MAXIMA);
-  delay(TEMPO_PAUSA); //Mantem os motores girando
-  Serial.println("Parando motores...");
-  //Acionamento dos motores para pararem
-  motores.stop();
-  delay(TEMPO_PAUSA); //Mantem os motores parados
+  // Leitura dos sensores (0 ou 1)
+  int extEsq = digitalRead(EXT_ESQ);
+  int esq    = digitalRead(ESQ);
+  int dir    = digitalRead(DIR);
+  int extDir = digitalRead(EXT_DIR);
 
-  Serial.println("Acionando motores para tras...");
-  //Acionamento dos motores para tras
-  motores.backward(VELOCIDADE_MAXIMA);
-  delay(TEMPO_PAUSA); //Mantem os motores girando
-  Serial.println("Parando motores...");
-  //Acionamento dos motores para pararem
-  motores.stop();
-  delay(TEMPO_PAUSA); //Mantem os motores parados
+  // ==================== CÁLCULO DO ERRO ====================
+  // Atribuímos pesos para cada sensor
+  // Linha no meio = erro 0
+  // Esquerda negativa | Direita positiva
 
-  Serial.println("Acionando motores para curva a esquerda de frente...");
-  //Acionamento dos motores para curva para a esquerda indo para frente
-  motores.turn(VELOCIDADE_CURVA, VELOCIDADE_MAXIMA);
-  delay(TEMPO_PAUSA); //Mantem os motores girando
-  Serial.println("Parando motores...");
-  //Acionamento dos motores para pararem
-  motores.stop();
-  delay(TEMPO_PAUSA); //Mantem os motores parados
+  if (extEsq == 1 && esq == 0 && dir == 0 && extDir == 0) erro = -3;
+  else if (extEsq == 1 && esq == 1 && dir == 0 && extDir == 0) erro = -2;
+  else if (extEsq == 0 && esq == 1 && dir == 0 && extDir == 0) erro = -1;
+  else if (extEsq == 0 && esq == 1 && dir == 1 && extDir == 0) erro = 0;
+  else if (extEsq == 0 && esq == 0 && dir == 1 && extDir == 0) erro = 1;
+  else if (extEsq == 0 && esq == 0 && dir == 1 && extDir == 1) erro = 2;
+  else if (extEsq == 0 && esq == 0 && dir == 0 && extDir == 1) erro = 3;
+  // Caso perca a linha, mantém último erro
+  else erro = erroAnterior;
 
-  Serial.println("Acionando motores para curva a direita de frente...");
-  //Acionamento dos motores para curva para a direita indo para frente
-  motores.turn(VELOCIDADE_MAXIMA, VELOCIDADE_CURVA);
-  delay(TEMPO_PAUSA); //Mantem os motores girando
-  Serial.println("Parando motores...");
-  //Acionamento dos motores para pararem
-  motores.stop();
-  delay(TEMPO_PAUSA); //Mantem os motores parados
+  // ==================== PID ====================
+  integral += erro;
+  derivada = erro - erroAnterior;
 
-  Serial.println("Acionando motores para curva a esquerda de tras...");
-  //Acionamento dos motores para curva para a esquerda indo para tras
-  motores.turn(-VELOCIDADE_CURVA, -VELOCIDADE_MAXIMA);
-  delay(TEMPO_PAUSA); //Mantem os motores girando
-  Serial.println("Parando motores...");
-  //Acionamento dos motores para pararem
-  motores.stop();
-  delay(TEMPO_PAUSA); //Mantem os motores parados
+  controle = (Kp * erro) + (Ki * integral) + (Kd * derivada);
 
-  Serial.println("Acionando motores para curva a direita de tras...");
-  //Acionamento dos motores para curva para a direita indo para tras
-  motores.turn(-VELOCIDADE_MAXIMA, -VELOCIDADE_CURVA);
-  delay(TEMPO_PAUSA); //Mantem os motores girando
-  Serial.println("Parando motores...");
-  //Acionamento dos motores para pararem
-  motores.stop();
-  delay(TEMPO_PAUSA); //Mantem os motores parados
+  // 🔥 LIMITADOR DO PID (ESSENCIAL)
+  controle = constrain(controle, -LIMITE_CONTROLE, LIMITE_CONTROLE);
 
-  //Funcoes de controle individual dos motores
-  Serial.println("<--- CONTROLE INDIVIDUAL DOS MOTORES --->");
-  Serial.println("Acelerando motor esquerdo para frente...");
-  //Rampa de aceleracao para frente
-  for (int i = 0; i <= VELOCIDADE_MAXIMA; i++){
-    //Aciona o motor esquerdo com o valor da variavel "i"
-    motores.setSpeedLeft(i);
-    Serial.print("Velocidade: ");
-    Serial.println(i);
-    delay(TEMPO_ACELERACAO); //Atrasa a aceleracao
-  }
+  erroAnterior = erro;
 
-  delay(TEMPO_PAUSA); //Mantem o motor girando
+  // ==================== VELOCIDADE DOS MOTORES ====================
+  int velocidadeEsq = VELOCIDADE_BASE + controle;
+  int velocidadeDir = VELOCIDADE_BASE - controle;
 
-  Serial.println("Freando motor esquerdo...");
-  //Rampa de desaceleracao
-  for (int i = VELOCIDADE_MAXIMA; i >= 0; i--){
-    //Aciona o motor esquerdo com o valor da variavel "i"
-    motores.setSpeedLeft(i);
-    Serial.print("Velocidade: ");
-    Serial.println(i);
-    delay(TEMPO_ACELERACAO); //Atrasa a desaceleracao
-  }
+  // Limitar velocidades
+  velocidadeEsq = constrain(velocidadeEsq, -VELOCIDADE_MAX, VELOCIDADE_MAX);
+  velocidadeDir = constrain(velocidadeDir, -VELOCIDADE_MAX, VELOCIDADE_MAX);
 
-  Serial.println("Acelerando motor direito para tras...");
-  //Rampa de aceleracao para tras
-  for (int i = 0; i <= VELOCIDADE_MAXIMA; i++){
-    //Aciona o motor direito com o valor negativo da variavel "i"
-    motores.setSpeedRight(-i);
-    Serial.print("Velocidade: -");
-    Serial.println(i);
-    delay(TEMPO_ACELERACAO); //Atrasa a aceleracao
-  }
+  // Aplicar nos motores
+  motores.setSpeedLeft(velocidadeEsq);
+  motores.setSpeedRight(velocidadeDir);
 
-  delay(TEMPO_PAUSA); //Mantem o motor girando
+  // ==================== DEBUG ====================
+  Serial.print("Erro: ");
+  Serial.print(erro);
+  Serial.print(" | Controle: ");
+  Serial.print(controle);
+  Serial.print(" | Esq: ");
+  Serial.print(velocidadeEsq);
+  Serial.print(" | Dir: ");
+  Serial.println(velocidadeDir);
 
-  Serial.println("Freando motor direito...");
-  //Rampa de desaceleracao
-  for (int i = VELOCIDADE_MAXIMA; i >= 0; i--){
-    //Aciona o motor direito com o valor negativo da variavel "i"
-    motores.setSpeedRight(-i);
-    Serial.print("Velocidade: -");
-    Serial.println(i);
-    delay(TEMPO_ACELERACAO); //Atrasa a desaceleracao
-  }
-
-  delay(TEMPO_PAUSA*2); //Aguarda para repeticao das funcoes
-
+  delay(10);
 }
-
-//------------------------------------------------------------------------------
