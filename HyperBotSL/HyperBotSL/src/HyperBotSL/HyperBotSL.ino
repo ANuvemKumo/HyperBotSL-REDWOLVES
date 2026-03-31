@@ -162,7 +162,7 @@ void ReCurta() {
   digitalWrite(DIRECAO_ESQUERDA, LOW);
   digitalWrite(DIRECAO_DIREITA, LOW);
 }
-
+  
 void MarchaCurta() {
   digitalWrite(DIRECAO_ESQUERDA, LOW);
   digitalWrite(DIRECAO_DIREITA, LOW);
