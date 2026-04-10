@@ -2,6 +2,7 @@
 #include <WebServer.h>
 #include <RoboCore_Vespa.h>
 #include "Adafruit_TCS34725.h"
+#include <Wire.h>
 
 // ================= WIFI =================
 const char* ssid = "EDUC_CE208";
@@ -34,60 +35,6 @@ float erroAnterior = 0;
 float integral = 0;
 float derivada = 0;
 float controle = 0;
-
-// ======================== SENSOR RGB =================
-
-#define TCAADR 0x70
-
-Adafruit_TCS34725 tcsEsquerdo = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_50MS, TCS34725_GAIN_1X); // Integra o sensor esquerdo com a biblioteca que define um tempo de inegração em MS e um ganho de X vezes
-Adafruit_TCS34725 tcsDireito = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_50MS, TCS34725_GAIN_1X); // Integra o sensor direita e faz o mesmo que foi citado acima
-
-uint16_t rE, gE, bE, cE; // Guarda os valores RGB do sensor esquerdo
-uint16_t rD, gD, bD, cD; // Guarda os valores RGB do sensor direito
-
-// ======================= EXPLICAÇÃO DA FUNÇÃO ABAIXO ======================= //
-/*
-  A função tcaSelect ativa um canal específico do multiplexador TCA9548A usando a comunicação I2C.
-  O valor i passado como argumento seleciona qual canal será ativado (de 0 a 7).
-  Quando um canal é ativado, o Arduino pode se comunicar com os dispositivos conectados a esse canal
-*/
-
-void tcaSelect(uint8_t i) {
-  if (i > 7) return; // Verifica se o índice fornecido está dentro do intervalo válido (0 a 7), caso contrário, sai da função;
-
-  Wire.beginTransmission(TCAADDR); // Inicia a transmissão I2C com o endereço do multiplexador (TCAADDR)
-
-  Wire.write(1 << i); // Envia um comando para ativar o canal selecionado, deslocando o valor '1' para a posição 'i'
-                      // Isso cria um número binário com um único bit '1' na posição correspondente ao canal
-
-  Wire.endTransmission(); // Finaliza a transmissão I2C, enviando o comando para o multiplexador
-}
-
-// ==== Variáveis para leitura assíncrona sensores cor ====
-unsigned long tempoInicioLEDEsquerdo = 0; // Define um tempo de inicio para ligar os leds -- Importante para calibração caso necessário
-bool ledEsquerdoAceso = false; // Define se o led está ligado == true ou desligado == false
-bool leituraProntaEsquerdo = false; // Usado para guardar a informação se o sensor já fez uma leitura
-
-// Definilções acima só que para o RGB direito
-unsigned long tempoInicioLEDDireito = 0;
-bool ledDireitoAceso = false;
-bool leituraProntaDireito = false;
-
-// Função do led para sensor esquerdo
-void atualizaLedDesligadoEsquerdo() {
-  tcaSelect(0); // Canal do sensor esquerdo
-  tcsEsquerdo.getRawData(&rE, &gE, &bE, &cE); // Valores RGB brutos dos sensores
-  tcsEsquerdo.setInterrupt(false); // Apaga LED
-  leituraProntaEsquerdo = true; // Completa a leitura do sensor
-}
-
-// Função do led para sensor direito
-void atualizaLedDesligadoDireito() {
-  tcaSelect(1); // Canal do sensor direito
-  tcsDireito.getRawData(&rD, &gD, &bD, &cD); // Valores RGB brutos dos sensores
-  tcsDireito.setInterrupt(false); // Apaga LED
-  leituraProntaDireito = true; // Completa a leitura do sensor
-}
 
 // ================= HTML (AVANÇADO) =================
 String paginaHTML() {
@@ -204,20 +151,6 @@ void setup() {
   pinMode(ESQ, INPUT);
   pinMode(DIR, INPUT);
   pinMode(EXT_DIR, INPUT);
-
-  tcaSelect(0);
-  if (!tcsEsquerdo.begin()) {
-    Serial.println("Sensor de cor ESQUERDO não encontrado.");
-    while (1);
-  }
-
-  tcaSelect(1);
-  if (!tcsDireito.begin()) {
-    Serial.println("Sensor de cor DIREITO não encontrado.");
-    while (1);
-  }
-
-  Serial.println("Sensores de cor inicializados.");
 
   WiFi.begin(ssid, password);
 
