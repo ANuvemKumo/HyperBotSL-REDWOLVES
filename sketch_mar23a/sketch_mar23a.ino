@@ -1,7 +1,6 @@
 #include <WiFi.h>
 #include <WebServer.h>
 #include <RoboCore_Vespa.h>
-#include "Adafruit_TCS34725.h"
 #include <Wire.h>
 
 // ================= WIFI =================
