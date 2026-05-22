@@ -1,73 +1,114 @@
 #include <Arduino.h>
 #include <QTRSensors.h>
+#include "AFMotor.h"
 
-// =========== Definição dos Sensores QTR ========== //
+// ===== Motores =====
+
+AF_DCMotor motor_direito(3);
+AF_DCMotor motor_esquerdo(4);
+
+// ===== Sensores QTR =====
 
 QTRSensors qtr;
+
 const uint8_t SensorCount = 8;
 uint16_t sensorValues[SensorCount];
-uint8_t pinos[SensorCount] = {51,50,49,48,47,46,45,44};
 
-// ============= Motores ================ //
+uint8_t pinos[SensorCount] = {
+  51,50,49,48,
+  47,46,45,44
+};
 
-#define IN1 22
-#define IN2 23
-#define IN3 24
-#define IN4 25
+const uint16_t MEDIA_PRETO = 600;
 
-// ============= Variáveis Responsáveis pelos dados do QTR ============ //
+// ===== Velocidade =====
 
-const uint16_t MEDIA_PRETO = 600; //O preto completo é 1000 e o branco é próx de 0
+#define VELOCIDADE 255
 
-// ================= MOVIMENTOS =================
-
-/*
-
-Regras de movimentação de Motores com Ponte-H
-
-| INx1 | INx2 | Resultado                  |
-| ---- | ---- | -------------------------- |
-| HIGH | LOW  | Gira pra frente            |
-| LOW  | HIGH | Gira pra trás              |
-| LOW  | LOW  | Desligado             |
-| HIGH | HIGH | Freio (depende da ponte H) |
-
-*/
+// ===== Movimentos =====
 
 void frente() {
-  digitalWrite(IN1, HIGH); digitalWrite(IN2, LOW);
-  digitalWrite(IN3, HIGH); digitalWrite(IN4, LOW);
+
+  motor_direito.setSpeed(VELOCIDADE);
+  motor_esquerdo.setSpeed(VELOCIDADE);
+
+  motor_direito.run(FORWARD);
+  motor_esquerdo.run(FORWARD);
+
 }
 
 void direita() {
-  digitalWrite(IN1, LOW); digitalWrite(IN2, LOW);
-  digitalWrite(IN3, HIGH); digitalWrite(IN4, LOW);
+
+  motor_direito.run(RELEASE);
+  motor_direito.setSpeed(VELOCIDADE);
+  motor_direito.run(BACKWARD);
+  motor_esquerdo.setSpeed(VELOCIDADE);
+  motor_esquerdo.run(FORWARD);
 }
 
 void esquerda() {
-  digitalWrite(IN1, HIGH); digitalWrite(IN2, LOW);
-  digitalWrite(IN3, LOW); digitalWrite(IN4, LOW);
+
+  motor_esquerdo.run(RELEASE);
+  motor_esquerdo.setSpeed(VELOCIDADE);
+  motor_esquerdo.run(BACKWARD);
+  motor_direito.setSpeed(VELOCIDADE);
+  motor_direito.run(FORWARD);
+}
+
+void tras() {
+
+  motor_direito.setSpeed(VELOCIDADE);
+  motor_esquerdo.setSpeed(VELOCIDADE);
+
+  motor_direito.run(BACKWARD);
+  motor_esquerdo.run(BACKWARD);
+
 }
 
 void parar() {
-  digitalWrite(IN1, LOW); digitalWrite(IN2, LOW);
-  digitalWrite(IN3, LOW); digitalWrite(IN4, LOW);
+
+  motor_direito.run(RELEASE);
+  motor_esquerdo.run(RELEASE);
+
 }
 
 void setup() {
+
+  motor_direito.setSpeed(VELOCIDADE);
+  motor_esquerdo.setSpeed(VELOCIDADE);
+
 }
 
 void loop() {
+
   frente();
-  delay(500);
+  delay(1000);
+
   parar();
   delay(1000);
+
   direita();
-  delay(1000);
+  delay(2000);
+
   parar();
   delay(1000);
+
   esquerda();
-  delay(2000)
+  delay(4000);
+
   parar();
   delay(1000);
+
+  esquerda();
+  delay(2000);
+
+  parar();
+  delay(1000);
+
+  direita();
+  delay(4000);
+
+  parar();
+  delay(2000);
+
 }
