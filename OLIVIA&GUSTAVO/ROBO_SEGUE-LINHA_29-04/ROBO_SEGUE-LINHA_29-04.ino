@@ -32,12 +32,27 @@ void frente() {
 }
 
 void direita() {
-
   motor_direito.run(RELEASE);
   motor_direito.setSpeed(VELOCIDADE);
   motor_direito.run(BACKWARD);
   motor_esquerdo.setSpeed(VELOCIDADE);
   motor_esquerdo.run(FORWARD);
+}
+
+void direitaForte() {
+
+  motor_direito.run(RELEASE);
+
+  motor_esquerdo.setSpeed(VELOCIDADE);
+  motor_esquerdo.run(FORWARD);
+}
+
+void esquerdaForte() {
+
+  motor_esquerdo.run(RELEASE);
+
+  motor_direito.setSpeed(VELOCIDADE);
+  motor_direito.run(FORWARD);
 }
 
 void esquerda() {
@@ -121,8 +136,8 @@ void calibraAE() {
   delay(1500);
   qtr.calibrate();
   qtr.readCalibrated(sensorValues);
-  parar()
-  delay(2500)
+  parar();
+  delay(2500);
   direita();
   delay(1500);
   qtr.calibrate();
@@ -206,8 +221,6 @@ void calibrarAntesDeSeguir() {
   delay(150);
 }
 
-
-
 // ================= SEGUIDOR (sem PWM) =================
 void seguirLinha() {
   qtr.readCalibrated(sensorValues);
@@ -256,6 +269,6 @@ void setup() {
 }
 
 void loop() {
-  seguirLinha();
-  delay(50);
+  seguirLinhaRele();
+  delay(10);
 }
