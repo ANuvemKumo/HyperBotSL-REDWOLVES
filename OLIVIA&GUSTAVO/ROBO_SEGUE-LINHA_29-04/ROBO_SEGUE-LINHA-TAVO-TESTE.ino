@@ -3,7 +3,7 @@ int erro = 0;
 int erroAnterior = 0;
 int derivada = 0;
 
-float Kp = 1;
+float Kp = 2;
 float Kd = 0;
 
 // velocidade base do segue linha
@@ -33,8 +33,8 @@ void seguirLinhaPD() {
 
   // ================= VELOCIDADE DOS MOTORES =================
 
-  int velocidadeDireita = Vel + correcao;
-  int velocidadeEsquerda = Vel - correcao;
+  int velocidadeDireita = Vel - correcao;
+  int velocidadeEsquerda = Vel + correcao;
 
   // limita velocidades
   velocidadeDireita = constrain(velocidadeDireita, VEL_MIN, VEL_MAX);

@@ -125,6 +125,17 @@ bool todosDireitaPreto() { // sensores 4..7
 
 // ================= CALIBRAÇÃO =================
 
+void calibra() {
+  Serial.println("============== CALIBRANDO... ==============");
+  for (uint16_t i = 0; i < 400; i++)
+  {
+    Serial.println(i);
+    qtr.calibrate();
+  }
+  Serial.println("============= CALIBRADO! =============");
+  delay(500);
+}
+
 void calibraAE() {
   qtr.calibrate();
   qtr.readCalibrated(sensorValues);
@@ -139,13 +150,15 @@ void calibraAE() {
   parar();
   delay(2500);
   direita();
-  delay(1500);
+  delay(1200);
   qtr.calibrate();
   qtr.readCalibrated(sensorValues);
   esquerda();
   delay(1500);
   qtr.calibrate();
   qtr.readCalibrated(sensorValues);
+  parar();
+  delay(2500);
 }
 
 
@@ -265,10 +278,10 @@ void setup() {
   qtr.setSensorPins(pinos, SensorCount);
 
   // calibrarAntesDeSeguir();
-  calibraAE();
+  calibra();
 }
 
 void loop() {
-  seguirLinhaRele();
+  seguirLinhaPD();
   delay(10);
 }
