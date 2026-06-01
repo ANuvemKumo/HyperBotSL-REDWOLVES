@@ -48,23 +48,3 @@ void seguirLinhaPD() {
   motor_direito.run(FORWARD);
   motor_esquerdo.run(FORWARD);
 }
-
-// ================= SEGUIDOR Relé =================
-void seguirLinhaRele() {
-
-  // posição da linha (0 a 7000)
-  uint16_t posicao = qtr.readLineBlack(sensorValues);
-
-  printSensoresCalibrados();
-
-  // centro = 3500
-  erro = posicao - 3500;
-
-  if (erro > 2700) {
-    direitaForte();
-  } else if (erro < -2700){
-    esquerdaForte();
-  } else {
-    frente();
-  }
-}

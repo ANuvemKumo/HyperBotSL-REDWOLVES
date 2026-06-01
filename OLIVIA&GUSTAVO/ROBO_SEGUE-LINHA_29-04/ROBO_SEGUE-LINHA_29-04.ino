@@ -19,9 +19,26 @@ int ultimoLado = 1; // -1 esquerda, 1 direita
 
 int VELOCIDADE = 255;
 
+// ================= ULTRASSONICO ================
+const int trigPin = 41;
+const int echoPin = 40; //PORTAS TEMPORARIAS
+
+const int limiteCm = 15;
+bool D_direita = true;
+bool D_esquerda = false;
+
 // ================= MOVIMENTOS =================
 
-void frente() {
+void parar(int tempo = 0) {
+  motor_direito.run(RELEASE);
+  motor_esquerdo.run(RELEASE);
+
+  if (tempo > 0){
+    delay(tempo);
+  }
+}
+
+void frente(int tempo = 0) {
 
   motor_direito.setSpeed(VELOCIDADE);
   motor_esquerdo.setSpeed(VELOCIDADE);
@@ -29,42 +46,61 @@ void frente() {
   motor_direito.run(FORWARD);
   motor_esquerdo.run(FORWARD);
 
+  if (tempo > 0){
+    delay(tempo);
+  }
 }
 
-void direita() {
+void direita(int tempo = 0) {
   motor_direito.run(RELEASE);
   motor_direito.setSpeed(VELOCIDADE);
   motor_direito.run(BACKWARD);
   motor_esquerdo.setSpeed(VELOCIDADE);
   motor_esquerdo.run(FORWARD);
+
+  if (tempo > 0){
+    delay(tempo);
+  }
 }
 
-void direitaForte() {
+void direitaForte(int tempo = 0) {
 
   motor_direito.run(RELEASE);
 
   motor_esquerdo.setSpeed(VELOCIDADE);
   motor_esquerdo.run(FORWARD);
+
+  if (tempo > 0){
+    delay(tempo);
+  }
 }
 
-void esquerdaForte() {
+void esquerdaForte(int tempo = 0) {
 
   motor_esquerdo.run(RELEASE);
 
   motor_direito.setSpeed(VELOCIDADE);
   motor_direito.run(FORWARD);
+
+  if (tempo > 0){
+    delay(tempo);
+  }
 }
 
-void esquerda() {
+void esquerda(int tempo = 0) {
 
   motor_esquerdo.run(RELEASE);
   motor_esquerdo.setSpeed(VELOCIDADE);
   motor_esquerdo.run(BACKWARD);
   motor_direito.setSpeed(VELOCIDADE);
   motor_direito.run(FORWARD);
+
+  if (tempo > 0){
+    delay(tempo);
+  }
 }
 
-void tras() {
+void tras(int tempo = 0) {
 
   motor_direito.setSpeed(VELOCIDADE);
   motor_esquerdo.setSpeed(VELOCIDADE);
@@ -72,13 +108,9 @@ void tras() {
   motor_direito.run(BACKWARD);
   motor_esquerdo.run(BACKWARD);
 
-}
-
-void parar() {
-
-  motor_direito.run(RELEASE);
-  motor_esquerdo.run(RELEASE);
-
+  if (tempo > 0){
+    delay(tempo);
+  }
 }
 
 // Movimentos dedicados de calibração (giro contínuo)
@@ -273,15 +305,20 @@ void seguirLinha() {
 // ================= SETUP / LOOP =================
 void setup() {
   Serial.begin(115200);
+  pinMode(trigPin, OUTPUT);
+  pinMode(echoPin, INPUT);
 
   qtr.setTypeRC();
   qtr.setSensorPins(pinos, SensorCount);
 
-  // calibrarAntesDeSeguir();
+  //calibrarAntesDeSeguir();
   calibra();
+  iniciarSensoresCor();  
 }
 
 void loop() {
+  verificarSensoresCor();
+  detectarObstaculo();
   seguirLinhaPD();
-  delay(10);
+  delay(0);
 }
