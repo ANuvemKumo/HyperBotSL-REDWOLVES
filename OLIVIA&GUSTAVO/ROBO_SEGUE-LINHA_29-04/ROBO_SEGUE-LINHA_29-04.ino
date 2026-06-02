@@ -2,6 +2,10 @@
 #include <QTRSensors.h>
 #include "AFMotor.h"
 
+extern int erroAnterior;
+extern int erro;
+extern int derivada;
+
 // ================= QTR =================
 QTRSensors qtr;
 const uint8_t SensorCount = 8;
@@ -13,19 +17,22 @@ AF_DCMotor motor_direito(4);
 AF_DCMotor motor_esquerdo(3);
 
 // ================= AJUSTES =================
-const uint16_t LIMIAR_PRETO = 800;    // preto ~1000, branco ~0 (readCalibrated)
+const uint16_t LIMIAR_PRETO = 250;    // preto ~1000, branco ~0 (readCalibrated)
 const uint16_t TIMEOUT_LADO = 4000;   // tempo max de busca por lado (ms)
 int ultimoLado = 1; // -1 esquerda, 1 direita
 
 int VELOCIDADE = 255;
+
+bool verificandoGap = false;
+unsigned long inicioGap = 0;
 
 // ================= ULTRASSONICO ================
 const int trigPin = 41;
 const int echoPin = 40; //PORTAS TEMPORARIAS
 
 const int limiteCm = 15;
-bool D_direita = true;
-bool D_esquerda = false;
+bool D_direita = false;
+bool D_esquerda = true;
 
 // ================= MOVIMENTOS =================
 
@@ -114,20 +121,18 @@ void tras(int tempo = 0) {
 }
 
 // Movimentos dedicados de calibração (giro contínuo)
-void giraDireitaCalib() {
+void direita_2() {
   motor_direito.run(RELEASE);
-  motor_direito.setSpeed(VELOCIDADE);
-  motor_direito.run(BACKWARD);
   motor_esquerdo.setSpeed(VELOCIDADE);
   motor_esquerdo.run(FORWARD);
 }
 
-void giraEsquerdaCalib() {
-  motor_esquerdo.run(RELEASE);
-  motor_esquerdo.setSpeed(VELOCIDADE);
-  motor_esquerdo.run(BACKWARD);
+void esquerda_2() {
+  //motor_esquerdo.run(RELEASE);
   motor_direito.setSpeed(VELOCIDADE);
   motor_direito.run(FORWARD);
+  motor_esquerdo.setSpeed(55);
+  motor_esquerdo.run(FORWARD);
 }
 
 // ================= DEBUG SERIAL =================
@@ -302,6 +307,19 @@ void seguirLinha() {
   }
 }
 
+bool encontrouLinha() {
+
+  qtr.readLineBlack(sensorValues);
+
+  for (int i = 0; i < 8; i++) {
+    if (sensorValues[i] > LIMIAR_PRETO) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
 // ================= SETUP / LOOP =================
 void setup() {
   Serial.begin(115200);
@@ -319,6 +337,44 @@ void setup() {
 void loop() {
   verificarSensoresCor();
   detectarObstaculo();
+  if (
+    sensorValues[0] < LIMIAR_PRETO &&
+    sensorValues[1] < LIMIAR_PRETO &&
+    sensorValues[2] < LIMIAR_PRETO &&
+    sensorValues[3] < LIMIAR_PRETO &&
+    sensorValues[4] < LIMIAR_PRETO &&
+    sensorValues[5] < LIMIAR_PRETO &&
+    sensorValues[6] < LIMIAR_PRETO &&
+    sensorValues[7] < LIMIAR_PRETO
+  ) {
+    
+    if (!verificandoGap){
+      verificandoGap = true;
+      inicioGap = millis();
+    }
+
+    if (millis() - inicioGap >=500) {
+      if (erroAnterior < 0) {
+        parar(500);
+        direita(400);
+        parar(500);
+        frente(800);
+      }
+      else if (erroAnterior > 0){
+        parar(500);
+        esquerda(400);
+        parar(500);
+        frente(1500);
+      }
+      else {
+        parar(500);
+        frente(1500);
+      }
+    }
+  }
+  else {
+    verificandoGap = false;
+  }
   seguirLinhaPD();
   delay(0);
 }

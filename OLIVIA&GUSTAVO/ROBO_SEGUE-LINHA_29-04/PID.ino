@@ -21,7 +21,7 @@ void seguirLinhaPD() {
   printSensoresCalibrados();
 
   // centro = 3500
-  float erro = posicao - 3500;
+  erro = posicao - 3500;
 
   // derivada
   derivada = erro - erroAnterior;

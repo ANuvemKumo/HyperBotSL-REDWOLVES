@@ -296,7 +296,7 @@ void verificarSensoresCor()
 
   if (verdeD && verdeE)
   {
-    Serial.println("DUPLO VERDE");
+    Serial.println("BECO - DOIS VERDES ENCONTRADOS!");
 
     parar(1000);
     //delay(1000);
