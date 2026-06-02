@@ -22,6 +22,7 @@ void desviarObstaculoDireita() {
   bool linha = true;
   tras(500);
   esquerda(1000);
+  frente(500);
   while (linha) {
     esquerda();
     qtr.read(sensorValues);
@@ -44,8 +45,8 @@ void desviarObstaculoDireita() {
 void desviarObstaculoEsquerda() {
   bool linha = true;
   tras(500);
-  delay(500);
   esquerda(1000);
+  frente(500);
   while (linha) {
     direita();
     qtr.read(sensorValues);
@@ -71,8 +72,7 @@ void detectarObstaculo() {
   //Serial.println(dist);
   if (dist > 0 && dist <= limiteCm) {
     Serial.println("OBSTACULO");
-    parar();
-    delay(5000);
+    parar(2000);
     if (D_direita){
       desviarObstaculoDireita();
     }
@@ -81,11 +81,8 @@ void detectarObstaculo() {
     }
     else{
       esquerda();
-      delay(100);
       direita();
-      delay(100);
       parar();
-      delay(500);
     }
   }
 }

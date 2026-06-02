@@ -3,7 +3,7 @@ int erro = 0;
 int erroAnterior = 0;
 int derivada = 0;
 
-float Kp = 2;
+float Kp = 5;
 float Kd = 0;
 
 // velocidade base do segue linha
@@ -44,7 +44,7 @@ void seguirLinhaPD() {
   motor_direito.setSpeed(velocidadeDireita);
   motor_esquerdo.setSpeed(velocidadeEsquerda);
 
-  // ambos para frente
-  motor_direito.run(FORWARD);
-  motor_esquerdo.run(FORWARD);
+// Motor FRENTE
+motor_direito.run(FORWARD);
+motor_esquerdo.run(FORWARD);
 }

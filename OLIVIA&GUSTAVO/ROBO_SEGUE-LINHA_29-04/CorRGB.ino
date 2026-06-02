@@ -21,6 +21,9 @@ Adafruit_TCS34725 tcsE(
   TCS34725_GAIN_1X
 );
 
+#define LED_E = 26;
+#define LED_D = 27;
+
 // ================= HSB =================
 
 float hue;
@@ -237,6 +240,7 @@ void verificarSensoresCor()
     Serial.println("VERDE DIREITA");
 
     parar(1000);
+    //delay(1000);
     if (
 
       (sensorValues[0] > LIMIAR_PRETO &&
@@ -250,7 +254,9 @@ void verificarSensoresCor()
       sensorValues[7] > LIMIAR_PRETO)
 
     ) {
-        esquerda(800);
+        esquerda(1000);
+        //delay(1000);
+
       }
 
 
@@ -264,6 +270,7 @@ void verificarSensoresCor()
     Serial.println("VERDE ESQUERDA");
 
     parar(1000);
+    delay(1000);
 
     if (
 
@@ -278,7 +285,8 @@ void verificarSensoresCor()
       sensorValues[7] > LIMIAR_PRETO)
 
     ) {
-        direita(800);
+        direita(1000);
+        //delay(1000);
       }
 
     return;
@@ -291,6 +299,7 @@ void verificarSensoresCor()
     Serial.println("DUPLO VERDE");
 
     parar(1000);
+    //delay(1000);
 
     if (
 
@@ -305,7 +314,8 @@ void verificarSensoresCor()
       sensorValues[7] > LIMIAR_PRETO)
 
     ) {
-        direita(2500);
+        direita(4300);
+        //delay(2800);
       }
 
     return;
