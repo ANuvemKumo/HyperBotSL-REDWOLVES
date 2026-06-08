@@ -360,14 +360,14 @@ void loop() {
           tras(300);
           direita(1000);
           parar(500);
-          frente(800);
+          frente(1100);
         }
         else if (erroAnterior > 0){
           parar(500);
           tras(300);
           esquerda(1000);
           parar(500);
-          frente(800);
+          frente(1100);
         }
         else {
           parar(500);
@@ -378,117 +378,6 @@ void loop() {
     else {
       verificandoGap = false;
     }
-  seguirLinhaPD();
+  seguirLinhaPD2();
   delay(0);
 }
-
-/*
-void loop() {
-
-  verificarSensoresCor();
-  detectarObstaculo();
-
-  bool tudoBranco =
-    sensorValues[0] < LIMIAR_PRETO &&
-    sensorValues[1] < LIMIAR_PRETO &&
-    sensorValues[2] < LIMIAR_PRETO &&
-    sensorValues[3] < LIMIAR_PRETO &&
-    sensorValues[4] < LIMIAR_PRETO &&
-    sensorValues[5] < LIMIAR_PRETO &&
-    sensorValues[6] < LIMIAR_PRETO &&
-    sensorValues[7] < LIMIAR_PRETO;
-
-  if (tudoBranco) {
-
-    if (!verificandoGap) {
-      verificandoGap = true;
-      inicioGap = millis();
-    }
-
-    // Espera um pouco para confirmar
-    if (millis() - inicioGap >= 1000) {
-
-      Serial.println("POSSIVEL GAP");
-
-      parar(100);
-
-      // ===== VARREDURA DIREITA =====
-
-      direita(2000);
-      verificarSensoresCor();
-
-      bool encontrouLinha = false;
-
-      qtr.read(sensorValues);
-
-      for (int i = 0; i < 8; i++) {
-        Serial.print(sensorValues[i]);
-        Serial.print('\t');
-      }
-      Serial.println();
-
-      for (int i = 0; i < 8; i++) {
-        if (sensorValues[i] > 800) {
-          return encontrouLinha = true;
-          break;
-        }
-      }
-
-      // ===== VARREDURA ESQUERDA =====
-
-      if (!encontrouLinha) {
-
-        esquerda(4000);
-        verificarSensoresCor();
-
-        qtr.read(sensorValues);
-
-        for (int i = 0; i < 8; i++) {
-          Serial.print(sensorValues[i]);
-          Serial.print('\t');
-        }
-        Serial.println();
-
-        for (int i = 0; i < 8; i++) {
-          if (sensorValues[i] > 800) {
-            return encontrouLinha = true;
-            break;
-          }
-        }
-
-        direita(4000); // volta ao centro
-      }
-
-      // ===== DECISAO =====
-
-      if (!encontrouLinha) {
-
-        Serial.println("GAP CONFIRMADO");
-
-        if (erroAnterior < 0) {
-          tras(300);
-          direita(1000);
-          parar(500);
-          frente(800);
-        }
-        else if (erroAnterior > 0) {
-          tras(300);
-          esquerda(1000);
-          parar(500);
-          frente(800);
-        }
-        else {
-          frente(800);
-        }
-      }
-
-      verificandoGap = false;
-    }
-  }
-  else {
-    verificandoGap = false;
-  }
-
-  seguirLinhaPD();
-}
-*/

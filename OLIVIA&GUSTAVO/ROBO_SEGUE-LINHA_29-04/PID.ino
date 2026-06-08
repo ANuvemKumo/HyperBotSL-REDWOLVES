@@ -1,5 +1,5 @@
 // ================= SEGUIDOR PD =================
-int erro = 0;
+/*int erro = 0;
 int erroAnterior = 0;
 int derivada = 0;
 
@@ -47,4 +47,4 @@ void seguirLinhaPD() {
 // Motor FRENTE
 motor_direito.run(FORWARD);
 motor_esquerdo.run(FORWARD);
-}
+}*/

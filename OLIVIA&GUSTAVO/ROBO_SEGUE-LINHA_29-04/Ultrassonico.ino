@@ -44,6 +44,8 @@ void desviarObstaculoDireita() {
   tras(500);
   esquerda(1200);
   frente(1800);
+  direita(500);
+  frente(300);
   unsigned long inicioBusca = millis();
 
   while (true) {
@@ -65,6 +67,9 @@ void desviarObstaculoEsquerda() {
   tras(500);
   direita(1200);
   frente(1800);
+  esquerda(1000);
+  parar(100);
+  frente(650);
 
   unsigned long inicioBusca = millis();
 
