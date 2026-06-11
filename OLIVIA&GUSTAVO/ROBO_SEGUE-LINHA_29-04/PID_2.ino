@@ -3,43 +3,61 @@ int erro = 0;
 int erroAnterior = 0;
 int derivada = 0;
 
-float Kp = 1;
+float Kp = 2;
 float Kd = 0;
 
-// velocidade base
-int Vel = 190;
+const int VEL_NORMAL = 190;
+const int VEL_RAMPA  = 230;
+int velocidadeBase;
 
-// limite do motor
 const int VEL_MAX = 255;
 
-// intensidade da roda reversa
 const float FATOR_REVERSO = 1;
+
+extern bool estaNaRampa(float limite = 15);
 
 void seguirLinhaPD2()
 {
-    // posição da linha (0 a 7000)
     uint16_t posicao = qtr.readLineBlack(sensorValues);
 
-    //printSensoresCalibrados();
-
-    // centro = 3500
     erro = posicao - 3500;
 
-    // derivada
     derivada = erro - erroAnterior;
 
-    // PD
-    float correcao = (Kp * erro) + (Kd * derivada);
+    //int velocidadeBase;
+    float kpAtual;
+
+    if (estaNaRampa())
+    {
+        velocidadeBase = VEL_RAMPA;
+        kpAtual = 0.6; // correção mais suave na rampa
+
+        Serial.println("RAMPA");
+    }
+    else
+    {
+        velocidadeBase = VEL_NORMAL;
+        kpAtual = Kp;
+    }
+
+    float correcao = (kpAtual * erro) + (Kd * derivada);
 
     erroAnterior = erro;
 
-    // velocidades sem limitar
-    int velocidadeDireita = Vel - correcao;
-    int velocidadeEsquerda = Vel + correcao;
+    int velocidadeDireita = velocidadeBase - correcao;
+    int velocidadeEsquerda = velocidadeBase + correcao;
 
-    // limita permitindo reverso
-    velocidadeDireita = constrain(velocidadeDireita, -VEL_MAX, VEL_MAX);
-    velocidadeEsquerda = constrain(velocidadeEsquerda, -VEL_MAX, VEL_MAX);
+    velocidadeDireita = constrain(
+        velocidadeDireita,
+        -VEL_MAX,
+        VEL_MAX
+    );
+
+    velocidadeEsquerda = constrain(
+        velocidadeEsquerda,
+        -VEL_MAX,
+        VEL_MAX
+    );
 
     // ================= MOTOR DIREITO =================
 

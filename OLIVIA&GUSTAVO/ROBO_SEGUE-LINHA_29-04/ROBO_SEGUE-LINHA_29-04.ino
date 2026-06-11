@@ -7,6 +7,8 @@ extern int erro;
 extern int derivada;
 extern bool leuVermelhoDireita();
 extern bool leuVermelhoEsquerda();
+extern bool estaNaRampa(float limite = 15);
+extern int velocidadeBase;
 
 // ================= QTR =================
 QTRSensors qtr;
@@ -356,9 +358,11 @@ void setup() {
   //calibrarAntesDeSeguir();
   calibra();
   iniciarSensoresCor();  
+  iniciarGiroscopio();
 }
 
 void loop() {
+  atualizarGiroscopio();
   verificarSensoresCor();
   detectarObstaculo();
   if (
@@ -417,6 +421,19 @@ void loop() {
 
       verificandoGap = false;
     }
+  }
+  if (estaNaRampa())
+  {
+    Serial.println("AAAAAAAAAAAAAAAAAAAAAAAAAAA");
+    Serial.print("  Vel: ");
+    Serial.println(velocidadeBase);
+  }
+  else
+  {
+    Serial.print("Pitch: ");
+    Serial.print(getPitch());
+    Serial.print("  Vel: ");
+    Serial.println(velocidadeBase);
   }
   seguirLinhaPD2();
   delay(0);
