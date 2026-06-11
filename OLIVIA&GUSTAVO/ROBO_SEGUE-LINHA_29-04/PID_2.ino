@@ -20,7 +20,7 @@ void seguirLinhaPD2()
     // posição da linha (0 a 7000)
     uint16_t posicao = qtr.readLineBlack(sensorValues);
 
-    printSensoresCalibrados();
+    //printSensoresCalibrados();
 
     // centro = 3500
     erro = posicao - 3500;

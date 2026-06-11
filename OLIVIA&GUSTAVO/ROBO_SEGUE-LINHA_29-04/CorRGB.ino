@@ -317,6 +317,7 @@ void verificarSensoresCor()
 
     ) {
         direita(4300);
+        frente(100);
         //delay(2800);
       }
 

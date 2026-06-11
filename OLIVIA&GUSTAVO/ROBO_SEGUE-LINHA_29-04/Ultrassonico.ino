@@ -42,19 +42,20 @@ void desviarObstaculoDireita() {
   Serial.println("Contornando pela Direita!");
   bool linha = true;
   tras(500);
-  esquerda(1200);
-  frente(1800);
-  direita(500);
-  frente(300);
+  esquerda(1000);
+  frente(1500);
+  direita(1000);
+  parar(100);
+  frente(1000);
   unsigned long inicioBusca = millis();
 
   while (true) {
     Serial.println("PROCURANDO...");
-    esquerda_2();
+    direita_2();
     if (encontrouLINHA()){
       Serial.println("ENCONTROU A LINHA PRETA!");
       parar(500);
-      frente(200);
+      frente(400);
       esquerda(500);
       parar(500);
       break;
@@ -65,11 +66,11 @@ void desviarObstaculoDireita() {
 void desviarObstaculoEsquerda() {
   Serial.println("Contornando pela Esquerda!");
   tras(500);
-  direita(1200);
-  frente(1800);
+  direita(1000);
+  frente(1500);
   esquerda(1000);
   parar(100);
-  frente(650);
+  frente(1000);
 
   unsigned long inicioBusca = millis();
 
@@ -79,7 +80,7 @@ void desviarObstaculoEsquerda() {
     if (encontrouLINHA()){
       Serial.println("ENCONTROU A LINHA PRETA!");
       parar(500);
-      frente(200);
+      frente(400);
       direita(500);
       parar(500);
       break;

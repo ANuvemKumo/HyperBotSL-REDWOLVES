@@ -5,6 +5,8 @@
 extern int erroAnterior;
 extern int erro;
 extern int derivada;
+extern bool leuVermelhoDireita();
+extern bool leuVermelhoEsquerda();
 
 // ================= QTR =================
 QTRSensors qtr;
@@ -31,8 +33,8 @@ const int trigPin = 41;
 const int echoPin = 40; //PORTAS TEMPORARIAS
 
 const int limiteCm = 10;
-bool D_direita = false;
-bool D_esquerda = true;
+bool D_direita = true;
+bool D_esquerda = false;
 
 // ================= MOVIMENTOS =================
 
@@ -125,6 +127,8 @@ void direita_2() {
   motor_direito.run(RELEASE);
   motor_esquerdo.setSpeed(VELOCIDADE);
   motor_esquerdo.run(FORWARD);
+  motor_direito.setSpeed(55);
+  motor_direito.run(FORWARD);
 }
 
 void esquerda_2() {
@@ -274,7 +278,7 @@ void calibrarAntesDeSeguir() {
 // ================= SEGUIDOR (sem PWM) =================
 void seguirLinha() {
   qtr.readCalibrated(sensorValues);
-  printSensoresCalibrados(); // mantenha para debug; remova depois se quiser
+  //printSensoresCalibrados(); // mantenha para debug; remova depois se quiser
 
   bool s0 = sensorValues[0] > LIMIAR_PRETO;
   bool s1 = sensorValues[1] > LIMIAR_PRETO;
@@ -320,6 +324,26 @@ bool encontrouLinha() {
   return false;
 }
 
+bool encontrouVermelhoGap()
+{
+  frente(250);   // avança um pouco para posicionar os sensores
+  parar(100);
+
+  bool vermelhoD = leuVermelhoDireita();
+  bool vermelhoE = leuVermelhoEsquerda();
+
+  if (vermelhoD || vermelhoE)
+  {
+    Serial.println("VERMELHO NO GAP!");
+
+    parar(10000);   // para 10 segundos
+
+    return true;
+  }
+
+  return false;
+}
+
 // ================= SETUP / LOOP =================
 void setup() {
   Serial.begin(115200);
@@ -353,31 +377,47 @@ void loop() {
       inicioGap = millis();
     }
 
-    if (millis() - inicioGap >=1000) {
+    if (millis() - inicioGap >= 1000) {
+
       Serial.println("GAP!");
-        if (erroAnterior < 0) {
-          parar(500);
-          tras(300);
-          direita(1000);
-          parar(500);
-          frente(1100);
-        }
-        else if (erroAnterior > 0){
-          parar(500);
-          tras(300);
-          esquerda(1000);
-          parar(500);
-          frente(1100);
-        }
-        else {
-          parar(500);
-          frente(800);
-        }
+
+      // anda um pouco e verifica vermelho
+      if (encontrouVermelhoGap()) {
+
+        verificandoGap = false;
+        return; // não faz a manobra do gap
+
       }
-    }
-    else {
+
+      // GAP normal
+      if (erroAnterior < 0) {
+
+        parar(500);
+        tras(300);
+        direita(1000);
+        parar(500);
+        frente(1000);
+
+      }
+      else if (erroAnterior > 0) {
+
+        parar(500);
+        tras(300);
+        esquerda(1000);
+        parar(500);
+        frente(1000);
+
+      }
+      else {
+
+        parar(500);
+        frente(800);
+
+      }
+
       verificandoGap = false;
     }
+  }
   seguirLinhaPD2();
   delay(0);
 }
