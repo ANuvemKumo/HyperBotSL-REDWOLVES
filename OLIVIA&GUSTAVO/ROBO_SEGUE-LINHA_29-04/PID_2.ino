@@ -3,14 +3,14 @@ int erro = 0;
 int erroAnterior = 0;
 int derivada = 0;
 
-float Kp = 2;
+float Kp = 2; // de 1 até NO MAXIMO 5
 float Kd = 0;
 
-const int VEL_NORMAL = 190;
+const int VEL_NORMAL = 150;
 const int VEL_RAMPA  = 230;
 int velocidadeBase;
 
-const int VEL_MAX = 255;
+const int VEL_MAX = 240;
 
 const float FATOR_REVERSO = 1;
 

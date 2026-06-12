@@ -10,6 +10,7 @@ extern bool leuVermelhoEsquerda();
 extern bool estaNaRampa(float limite = 15);
 extern int velocidadeBase;
 
+
 // ================= QTR =================
 QTRSensors qtr;
 const uint8_t SensorCount = 8;
@@ -25,7 +26,7 @@ const uint16_t LIMIAR_PRETO = 250;    // preto ~1000, branco ~0 (readCalibrated)
 const uint16_t TIMEOUT_LADO = 4000;   // tempo max de busca por lado (ms)
 int ultimoLado = 1; // -1 esquerda, 1 direita
 
-int VELOCIDADE = 255;
+int VELOCIDADE = 240;
 
 bool verificandoGap = false;
 unsigned long inicioGap = 0;
@@ -35,8 +36,8 @@ const int trigPin = 41;
 const int echoPin = 40; //PORTAS TEMPORARIAS
 
 const int limiteCm = 10;
-bool D_direita = true;
-bool D_esquerda = false;
+bool D_direita = false;
+bool D_esquerda = true;
 
 // ================= MOVIMENTOS =================
 
@@ -134,10 +135,10 @@ void direita_2() {
 }
 
 void esquerda_2() {
-  //motor_esquerdo.run(RELEASE);
+  motor_esquerdo.run(RELEASE);
   motor_direito.setSpeed(VELOCIDADE);
   motor_direito.run(FORWARD);
-  motor_esquerdo.setSpeed(55);
+  motor_esquerdo.setSpeed(50);
   motor_esquerdo.run(FORWARD);
 }
 
@@ -400,7 +401,7 @@ void loop() {
         tras(300);
         direita(1000);
         parar(500);
-        frente(1000);
+        frente(1300);
 
       }
       else if (erroAnterior > 0) {
@@ -409,7 +410,7 @@ void loop() {
         tras(300);
         esquerda(1000);
         parar(500);
-        frente(1000);
+        frente(1300);
 
       }
       else {

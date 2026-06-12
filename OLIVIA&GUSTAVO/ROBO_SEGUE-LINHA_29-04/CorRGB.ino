@@ -316,7 +316,7 @@ void verificarSensoresCor()
       sensorValues[7] > LIMIAR_PRETO)
 
     ) {
-        direita(4300);
+        direita(4000);
         frente(100);
         //delay(2800);
       }
