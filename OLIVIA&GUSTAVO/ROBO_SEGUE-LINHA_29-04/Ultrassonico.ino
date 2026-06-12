@@ -39,25 +39,26 @@ bool encontrouLINHA() {
 
 
 void desviarObstaculoDireita() {
+  Serial.println("Contornando pela Direita!");
   bool linha = true;
   tras(500);
   esquerda(1000);
-  frente(1800);
-  while (linha) {
-    esquerda();
-    qtr.read(sensorValues);
-    if (// Pode ser otimizado usando for loop
-      sensorValues[0] > LIMIAR_PRETO || 
-      sensorValues[1] > LIMIAR_PRETO ||
-      sensorValues[2] > LIMIAR_PRETO ||
-      sensorValues[3] > LIMIAR_PRETO ||
-      sensorValues[4] > LIMIAR_PRETO ||
-      sensorValues[5] > LIMIAR_PRETO ||
-      sensorValues[6] > LIMIAR_PRETO ||
-      sensorValues[7] > LIMIAR_PRETO
-    )
-    {
-      linha = false;
+  frente(1500);
+  direita(1000);
+  parar(100);
+  frente(1000);
+  unsigned long inicioBusca = millis();
+
+  while (true) {
+    Serial.println("PROCURANDO...");
+    direita_2();
+    if (encontrouLINHA()){
+      Serial.println("ENCONTROU A LINHA PRETA!");
+      parar(500);
+      frente(400);
+      esquerda(500);
+      parar(500);
+      break;
     }
   }
 }
@@ -65,8 +66,11 @@ void desviarObstaculoDireita() {
 void desviarObstaculoEsquerda() {
   Serial.println("Contornando pela Esquerda!");
   tras(500);
-  direita(800);
-  frente(1800);
+  direita(1000);
+  frente(1500);
+  esquerda(1000);
+  parar(100);
+  frente(1000);
 
   unsigned long inicioBusca = millis();
 
@@ -76,7 +80,7 @@ void desviarObstaculoEsquerda() {
     if (encontrouLINHA()){
       Serial.println("ENCONTROU A LINHA PRETA!");
       parar(500);
-      frente(200);
+      frente(400);
       direita(500);
       parar(500);
       break;

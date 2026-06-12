@@ -5,6 +5,11 @@
 extern int erroAnterior;
 extern int erro;
 extern int derivada;
+extern bool leuVermelhoDireita();
+extern bool leuVermelhoEsquerda();
+extern bool estaNaRampa(float limite = 15);
+extern int velocidadeBase;
+
 
 // ================= QTR =================
 QTRSensors qtr;
@@ -21,7 +26,7 @@ const uint16_t LIMIAR_PRETO = 250;    // preto ~1000, branco ~0 (readCalibrated)
 const uint16_t TIMEOUT_LADO = 4000;   // tempo max de busca por lado (ms)
 int ultimoLado = 1; // -1 esquerda, 1 direita
 
-int VELOCIDADE = 255;
+int VELOCIDADE = 240;
 
 bool verificandoGap = false;
 unsigned long inicioGap = 0;
@@ -30,7 +35,7 @@ unsigned long inicioGap = 0;
 const int trigPin = 41;
 const int echoPin = 40; //PORTAS TEMPORARIAS
 
-const int limiteCm = 15;
+const int limiteCm = 10;
 bool D_direita = false;
 bool D_esquerda = true;
 
@@ -125,13 +130,15 @@ void direita_2() {
   motor_direito.run(RELEASE);
   motor_esquerdo.setSpeed(VELOCIDADE);
   motor_esquerdo.run(FORWARD);
+  motor_direito.setSpeed(55);
+  motor_direito.run(FORWARD);
 }
 
 void esquerda_2() {
-  //motor_esquerdo.run(RELEASE);
+  motor_esquerdo.run(RELEASE);
   motor_direito.setSpeed(VELOCIDADE);
   motor_direito.run(FORWARD);
-  motor_esquerdo.setSpeed(55);
+  motor_esquerdo.setSpeed(50);
   motor_esquerdo.run(FORWARD);
 }
 
@@ -274,7 +281,7 @@ void calibrarAntesDeSeguir() {
 // ================= SEGUIDOR (sem PWM) =================
 void seguirLinha() {
   qtr.readCalibrated(sensorValues);
-  printSensoresCalibrados(); // mantenha para debug; remova depois se quiser
+  //printSensoresCalibrados(); // mantenha para debug; remova depois se quiser
 
   bool s0 = sensorValues[0] > LIMIAR_PRETO;
   bool s1 = sensorValues[1] > LIMIAR_PRETO;
@@ -320,6 +327,26 @@ bool encontrouLinha() {
   return false;
 }
 
+bool encontrouVermelhoGap()
+{
+  frente(250);   // avança um pouco para posicionar os sensores
+  parar(100);
+
+  bool vermelhoD = leuVermelhoDireita();
+  bool vermelhoE = leuVermelhoEsquerda();
+
+  if (vermelhoD || vermelhoE)
+  {
+    Serial.println("VERMELHO NO GAP!");
+
+    parar(10000);   // para 10 segundos
+
+    return true;
+  }
+
+  return false;
+}
+
 // ================= SETUP / LOOP =================
 void setup() {
   Serial.begin(115200);
@@ -332,9 +359,11 @@ void setup() {
   //calibrarAntesDeSeguir();
   calibra();
   iniciarSensoresCor();  
+  iniciarGiroscopio();
 }
 
 void loop() {
+  atualizarGiroscopio();
   verificarSensoresCor();
   detectarObstaculo();
   if (
@@ -353,28 +382,60 @@ void loop() {
       inicioGap = millis();
     }
 
-    if (millis() - inicioGap >=500) {
-      if (erroAnterior < 0) {
-        parar(500);
-        direita(400);
-        parar(500);
-        frente(800);
+    if (millis() - inicioGap >= 1000) {
+
+      Serial.println("GAP!");
+
+      // anda um pouco e verifica vermelho
+      if (encontrouVermelhoGap()) {
+
+        verificandoGap = false;
+        return; // não faz a manobra do gap
+
       }
-      else if (erroAnterior > 0){
+
+      // GAP normal
+      if (erroAnterior < 0) {
+
         parar(500);
-        esquerda(400);
+        tras(300);
+        direita(1000);
         parar(500);
-        frente(1500);
+        frente(1300);
+
+      }
+      else if (erroAnterior > 0) {
+
+        parar(500);
+        tras(300);
+        esquerda(1000);
+        parar(500);
+        frente(1300);
+
       }
       else {
+
         parar(500);
-        frente(1500);
+        frente(800);
+
       }
+
+      verificandoGap = false;
     }
   }
-  else {
-    verificandoGap = false;
+  if (estaNaRampa())
+  {
+    Serial.println("AAAAAAAAAAAAAAAAAAAAAAAAAAA");
+    Serial.print("  Vel: ");
+    Serial.println(velocidadeBase);
   }
-  seguirLinhaPD();
+  else
+  {
+    Serial.print("Pitch: ");
+    Serial.print(getPitch());
+    Serial.print("  Vel: ");
+    Serial.println(velocidadeBase);
+  }
+  seguirLinhaPD2();
   delay(0);
 }
